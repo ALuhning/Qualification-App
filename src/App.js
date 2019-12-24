@@ -62,7 +62,7 @@ render() {
                   <Col>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Recipient"
+                      placeholder="Enter a Recipient"
                       ref={c => {this.recipientInput = c}}
                     />
                   </Col>
