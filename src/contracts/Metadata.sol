@@ -6,7 +6,7 @@ contract Metadata {
     using strings for *;
 
     function tokenURI(uint _tokenId) public pure returns (string memory _infoUrl) {
-    string memory base = "https://domain.com/metadata/";
+    string memory base = "https://qualificationcoin.netlify.com/metadata/";
     string memory id = uint2str(_tokenId);
     return base.toSlice().concat(id.toSlice());
     }
@@ -19,7 +19,7 @@ contract Metadata {
         length++;
         j /= 10;
     }
-    
+
     bytes memory bstr = new bytes(length);
     uint k = length - 1;
     while (i != 0) {
