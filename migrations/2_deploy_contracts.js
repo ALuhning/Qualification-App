@@ -1,5 +1,7 @@
 const Metadata = artifacts.require('./Metadata.sol')
-const QualificationCoin = artifacts.require('./QualificationCoin.sol')
+const QualificationFactory = artifacts.require('./QualificationFactory.sol')
+const QualificationHelper = artifacts.require('./QualificationHelper.sol')
+const QualificationOwnership = artifacts.require('./QualificationOwnership.sol')
 
 module.exports = function (deployer, network, accounts) {
 
@@ -7,12 +9,20 @@ module.exports = function (deployer, network, accounts) {
     await deployer.deploy(Metadata)
     const metadataInstance = await Metadata.deployed()
 
-    await deployer.deploy(QualificationCoin, 'Qualification Coin', 'QCOIN', metadataInstance.address)
-    const qualificationCoinInstance = await QualificationCoin.deployed()
+    await deployer.deploy(QualificationFactory)
+    const qualificationFactoryInstance = await QualificationFactory.deployed()
+
+    await deployer.deploy(QualificationHelper)
+    const qualificationHelperInstance = await QualificationHelper.deployed()
+
+    await deployer.deploy(QualificationOwnership, 'Qualifications', 'QUAL', metadataInstance.address)
+    const qualificationOwnershipInstance = await QualificationOwnership.deployed()
         
     console.log('\n*************************************************************************\n')
     console.log(`Metadata Contract Address: ${metadataInstance.address}`)
-    console.log(`QualificationCoinToken Contract Address: ${qualificationCoinInstance.address}`)
+    console.log(`Qualification Factory Address: ${qualificationFactoryInstance.address}`)
+    console.log(`Qualification Helper Address: ${qualificationHelperInstance.address}`)
+    console.log(`QualificationOwnership Contract Address: ${qualificationOwnershipInstance.address}`)
     console.log('\n*************************************************************************\n')
   })
 }

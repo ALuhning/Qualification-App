@@ -3,9 +3,10 @@ import {
   } from 'loom-js'
   import BN from 'bn.js'
   import Web3 from 'web3'
-  import QualificationCoin from '../abis/QualificationCoin.json'
+  import QualificationOwnership from '../abis/QualificationOwnership.json'
   
-  export default class QCoinContract {
+  export default class QualificationCreation {
+    
     async loadContract() {
       this.onEvent = null
       this._createClient()
@@ -44,17 +45,17 @@ import {
     async _createContractInstance() {
      // const networkId = await this._getCurrentNetwork()
      const networkId = '9545242630824' 
-     this.currentNetwork = QualificationCoin.networks[networkId]
+     this.currentNetwork = QualificationOwnership.networks[networkId]
       if (!this.currentNetwork) {
         throw Error('Contract not deployed on DAppChain')
       }
   
-      const ABI = QualificationCoin.abi
-      this.QualificationCoinInstance = new this.web3.eth.Contract(ABI, this.currentNetwork.address, {
+      const ABI = QualificationOwnership.abi
+      this.QualificationOwnershipInstance = new this.web3.eth.Contract(ABI, this.currentNetwork.address, {
         from: this.currentUserAddress
       })
   
-      this.QualificationCoinInstance.events.Transfer({ }, (err, event) => {
+      this.QualificationOwnershipInstance.events.Transfer({ }, (err, event) => {
         if (err) console.error('Error on event', err)
         else {
           if (this.onEvent) {

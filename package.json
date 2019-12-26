@@ -10,6 +10,7 @@
     "bn.js": "^5.1.0",
     "bootstrap": "^4.4.1",
     "ethers": "^4.0.41",
+    "formik": "^2.0.8",
     "loom-js": "^1.55.0",
     "loom-truffle-provider": "^0.13.0",
     "react": "^16.12.0",
