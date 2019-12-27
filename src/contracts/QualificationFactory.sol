@@ -15,19 +15,13 @@ contract QualificationFactory is Ownable {
       string qualificationName,
       string qualificationCode,
       address trgEstablishment,
-      Category category,
-      uint32 expiryDays,
       bool qualStatus);
-
-  enum Category { Parachuting }
 
   struct Qualification {
     uint id;
     string name;
     string qualCode;
     address trgEstablishment;
-    Category category;
-    uint32 expiryDays;
     uint32 created;
     bool qualStatus;
   }
@@ -38,33 +32,23 @@ contract QualificationFactory is Ownable {
 
   mapping (uint => address) public qualificationToTrgEstablishment;
   mapping (address => uint) trgEstablishmentQualificationCount;
-  mapping (string => uint) codeToQualId;
-  mapping (string => uint) nameToQualId;
 
   function _createQualification(
       string memory _name,
-      string memory _qualCode,
-      Category _category,
-      uint32 _expiryDays
+      string memory _qualCode
       ) internal {
-    require(codeToQualId[_qualCode]==0, "qualification code already exists");
-    require(nameToQualId[_name]==0, "name already exists");
-    qualifications.push(Qualification(nextId, _name, _qualCode, msg.sender, _category, _expiryDays, uint32(now), true));
-    codeToQualId[_qualCode] = nextId;
-    nameToQualId[_name] = nextId;
+    qualifications.push(Qualification(nextId, _name, _qualCode, msg.sender, uint32(now), true));
     qualificationToTrgEstablishment[nextId] = msg.sender;
     trgEstablishmentQualificationCount[msg.sender] = trgEstablishmentQualificationCount[msg.sender].add(1);
-    emit NewQualificationCreated(nextId, _name, _qualCode, msg.sender, _category, _expiryDays, true);
+    emit NewQualificationCreated(nextId, _name, _qualCode, msg.sender, true);
     nextId = nextId.add(1);
   }
 
   function createQualification(
       string memory _name,
-      string memory _qualCode,
-      Category _category,
-      uint32 _expiryDays
+      string memory _qualCode
   ) public {
-    _createQualification(_name, _qualCode, _category, _expiryDays);
+    _createQualification(_name, _qualCode);
   }
 
 }

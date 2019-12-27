@@ -16,9 +16,9 @@ contract QualificationOwnership is QualificationHelper, ERC721Full {
             metadata = _metadata;
         }
 
-   // function mint(address recipient) public onlyOwner {
-    //    _mint(recipient, totalSupply() + 1);
-    //}
+    function mint(address recipient, uint qualId) public onlyOwner {
+        _mint(recipient, qualId);
+    }
 
     function updateMetadata(address _metadata) public onlyOwner {
         metadata = _metadata;
@@ -32,9 +32,9 @@ contract QualificationOwnership is QualificationHelper, ERC721Full {
         return trgEstablishmentQualificationCount[_owner];
     }
 
-    function ownerOf(uint256 _tokenId) public view returns (address) {
-        return qualificationToTrgEstablishment[_tokenId];
-    }
+    //function ownerOf(uint256 _tokenId) public view returns (address) {
+    //    return qualificationToTrgEstablishment[_tokenId];
+    //}
 
     function _transfer(address _from, address _to, uint256 _tokenId) private {
         trgEstablishmentQualificationCount[_to] = trgEstablishmentQualificationCount[_to].add(1);

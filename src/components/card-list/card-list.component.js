@@ -2,13 +2,13 @@ import React from 'react'
 import { ListGroup } from 'react-bootstrap'
 import QualificationCard from '../qualification-card/qualification-card.component'
 
-export const CardList = (props) => {
+export const CardList = ({ qualifications, contract }) => {
     
         return (
             <ListGroup>
                 <ListGroup.Item>
-                    {props.qualifications.map(qualification => (
-                        <QualificationCard key={qualification.id} qualification={qualification} />
+                    {qualifications.map(qualification => (
+                        <QualificationCard key={qualification.id} contract={contract} qualification={qualification} />
                     ))}
                 </ListGroup.Item>
             </ListGroup>

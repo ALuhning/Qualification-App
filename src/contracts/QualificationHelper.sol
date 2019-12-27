@@ -10,24 +10,11 @@ contract QualificationHelper is QualificationFactory {
   }
 
   function changeQualificationName(uint _qualificationId, string calldata _newQualificationName) external onlyOwnerOf(_qualificationId) {
-    nameToQualId[qualifications[_qualificationId].name] = 0;
     qualifications[_qualificationId].name = _newQualificationName;
-    nameToQualId[qualifications[_qualificationId].name] = _qualificationId;
-    
   }
 
   function changeQualificationCode(uint _qualificationId, string calldata _newQualificationCode) external onlyOwnerOf(_qualificationId) {
-    codeToQualId[qualifications[_qualificationId].qualCode] = 0;
     qualifications[_qualificationId].qualCode = _newQualificationCode;
-    codeToQualId[qualifications[_qualificationId].qualCode] = _qualificationId;
-  }
-
-  function changeQualificationCategory(uint _qualificationId, Category _newQualificationCategory) external onlyOwnerOf(_qualificationId) {
-    qualifications[_qualificationId].category = _newQualificationCategory;
-  }
-
-  function changeQualificationExpiry(uint _qualificationId, uint32 _newQualificationExpiry) external onlyOwnerOf(_qualificationId) {
-    qualifications[_qualificationId].expiryDays = _newQualificationExpiry;
   }
 
   function changeQualificationStatus(uint _qualificationId) external onlyOwnerOf(_qualificationId) {

@@ -1,63 +1,121 @@
 import React from 'react'
 import { useFormik } from 'formik'
-import QualificationCreation from '../../utils/QualificationCreation'
+import { Card, Button, Form, Row, Col } from 'react-bootstrap'
 
-const CreateQualificationForm = () => {
-
-    const contract = new QualificationCreation()
-    contract.loadContract().then((result) => {
-        console.log(result)
-    })
+const CreateQualificationForm = ({contract, createQual, loading}) => {
     
+    const validate = values => {
+      const errors = {}
+      if(!values.qualName) {
+        errors.qualName = 'Required'
+      } else if (values.qualName.length > 30) {
+        errors.qualName = 'Must be 30 characters or less'
+      }
 
+      if(!values.qualCode) {
+        errors.qualCode = 'Required'
+      } else if (values.qualCode.length > 4) {
+        errors.qualCode = 'Must be 4 characters or less'
+      }
+
+      if(!values.recipient) {
+        errors.recipient = 'Required'
+      }
+
+      return errors      
+    }
+    
     const formik = useFormik({
         initialValues: {
             qualName: '',
             qualCode: '',
-            category: 0,
-            expiry: 0
+            recipient: ''
         },
+        validate,
         onSubmit: values=> {
-            alert(JSON.stringify(values, null, 2));
+            loading = true;
+            createQual(values.qualName, values.qualCode, values.recipient);
+            formik.resetForm({});
+            loading = false;
         },
     })
 
     return (
-        <form onSubmit={formik.handleSubmit}>
-            <label htmlFor="Qualification Name">Qualification Name</label>
-            <input
-                id="qualName"
-                name="qualName"
-                type="text"
-                onChange={formik.handleChange}
-                value={formik.values.qualName}
-            />
-            <label htmlFor="Qualification Code">Qualification Code</label>
-            <input
-                id="qualCode"
-                name="qualCode"
-                type="text"
-                onChange={formik.handleChange}
-                value={formik.values.qualCode}
-            />
-            <label htmlFor="Category">Category</label>
-            <input
-                id="category"
-                name="category"
-                type="number"
-                onChange={formik.handleChange}
-                value={formik.values.category}
-            />
-            <label htmlFor="Expiry">Expiry (Days)</label>
-            <input
-                id="expiry"
-                name="expiry"
-                type="number"
-                onChange={formik.handleChange}
-                value={formik.values.expiry}
-            />
-            <button type="submit">Submit</button>
-        </form>
+        <Card contract={contract}>
+        <Card.Header as="h3">
+          Award Qualification
+        </Card.Header>
+        <Card.Body>            
+            <Form onSubmit={formik.handleSubmit}>
+                <Row>
+                  <Col>
+                    <Form.Label>
+                      Name of Qualification
+                    </Form.Label>
+                  </Col>
+                  <Col>
+                    {formik.errors.qualName ? <div>{formik.errors.qualName}</div> : null}
+                    <Form.Control
+                        id="qualName"
+                        name="qualName"
+                        type="text"
+                        onChange={formik.handleChange}
+                        value={formik.values.qualName}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Label>
+                      Qualification Code
+                    </Form.Label>
+                  </Col>
+                  <Col>
+                    {formik.errors.qualCode ? <div>{formik.errors.qualCode}</div> : null}
+                    <Form.Control
+                        id="qualCode"
+                        name="qualCode"
+                        type="text"
+                        onChange={formik.handleChange}
+                        value={formik.values.qualCode}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Label>
+                      Awarded To:
+                    </Form.Label>
+                  </Col>
+                  <Col>
+                    {formik.errors.recipient ? <div>{formik.errors.recipient}</div> : null}
+                    <Form.Control
+                        id="recipient"
+                        name="recipient"
+                        type="text"
+                        onChange={formik.handleChange}
+                        value={formik.values.recipient}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col></Col>
+                  <Col>
+                    <Button
+                      variant="primary"
+                      style={{ marginTop: '15px' }}
+                      type="submit"
+                    >{!loading? 'Award Qualification' : 'Creating Qualification'}
+                    </Button>
+                  </Col>
+                </Row>
+            </Form>
+          </Card.Body>
+      </Card>
+
+
+
+       
     )
 }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Container, Card, Button, Form, Row, Col } from 'react-bootstrap'
-import QualificationOwnership from './utils/QualificationCreation'
+import { Container, Navbar, Card } from 'react-bootstrap'
+import QualificationCreation from './utils/QualificationCreation'
 import { SearchBox } from './components/search-box/search-box.component'
 import { CardList } from './components/card-list/card-list.component'
 import CreateQualificationForm  from './components/create-qualification-form/create-qualification-form.component'
@@ -9,8 +9,9 @@ import CreateQualificationForm  from './components/create-qualification-form/cre
 class App extends Component {
   constructor(props) {
     super(props)
-
-    this.contract = new QualificationOwnership()
+    this.createQualification = this.createQualification.bind(this)
+    this.contract = new QualificationCreation()
+    
     
     this.state = {
       recipient: '',
@@ -26,21 +27,21 @@ class App extends Component {
       qualifications: [],
       searchField: '',
       qualificationDetail: [],
-      contract: null
+      contract: null,
+      currentUser: '',
+      creationError: ''
     }
 
     
   }
 
-  intervalId;
+ 
 
-  async componentDidMount() {
-    await this.contract.loadContract()
-    this.setState({ contract: this.contract})
-    console.log(this.state.contract)
-    this.getQualificationsByTrgEstablishment(this.contract.currentUserAddress)
-
-   // this.intervalId = setInterval(this.displayQualifications.bind(this), 100)
+  componentDidMount() {
+    this.contract.loadContract()
+    this.getQualificationsByTrgEstablishment()
+    let currentUser = this.contract.currentUserAddress
+    this.setState({ currentUser })
   }  
 
   componentWillUnmount() {
@@ -51,31 +52,25 @@ class App extends Component {
     this.setState({ searchField: e.target.value })
   }
 
-  async createQualification() {
+  
+
+  async getOwner(id) {
+    await this.contract.QualificationOwnershipInstance.methods.owner(id).call()
+  }
+
+  async createQualification(name, code, recipient) {
     if( this.contract.QualificationOwnershipInstance && this.contract.currentUserAddress) {
-    const name = this.qualNameInput.value
-    const code = this.qualCodeInput.value
-    const category = this.qualCategoryInput.value
-    const expiry = this.qualExpiryInput.value
-    const error = 'one or more input fields is missing'
-      if(name || code || category || expiry === '') {
-        console.log(error)
-        return error
-      } else {
+      try {
       this.setState({ loading: true })
-      const result = await this.contract.QualificationOwnershipInstance.methods.createQualification(name, code, category, expiry).send({ from: this.contract.currentUserAddress })
-      this.setState({
-            loading: false,
-            tokenId: result.events.NewQualificationCreated.returnValues.qualificationId,
-            qualName: result.events.NewQualificationCreated.returnValues.qualificationName,
-            qualCode: result.events.NewQualificationCreated.returnValues.qualificationCode,
-            qualCategory: result.events.NewQualificationCreated.returnValues.category,
-            qualExpiry: result.events.NewQualificationCreated.returnValues.expiryDays,
-            qualTrgEstablisment: result.events.NewQualificationCreated.returnValues.trgEstablishment
-          })
-      let result1 = await this.contract.QualificationOwnershipInstance.methods.getQualificationsByTrgEstablishment(this.contract.currentUserAddress).call()
-      this.setState({ qualifications: result1 }) 
-        }
+      const result = await this.contract.QualificationOwnershipInstance.methods.createQualification(name, code).send({ from: this.contract.currentUserAddress })
+      await this.contract.QualificationOwnershipInstance.methods.mint(recipient, result.events.NewQualificationCreated.returnValues.qualificationId).send({ from: this.contract.currentUserAddress })
+      this.setState({ loading: false })
+      await this.contract.QualificationOwnershipInstance.methods.getQualificationsByTrgEstablishment(this.contract.currentUserAddress).call()
+      this.getQualificationsByTrgEstablishment(this.contract.currentUserAddress)  
+    } catch (error) {
+        this.setState({creationError: error})
+        this.getQualificationsByTrgEstablishment(this.contract.currentUserAddress)
+      }
     } else {
       this.setState({
           error: new Error('qualification ownership instance not loaded')
@@ -91,121 +86,54 @@ class App extends Component {
     return this.contract.QualificationOwnershipInstance.methods.qualificationToTrgEstablishment(id).call()
   }
 
-  async getQualificationsByTrgEstablishment(owner) {
-    let result = await this.contract.QualificationOwnershipInstance.methods.getQualificationsByTrgEstablishment(owner).call()
-    this.setState({ qualifications: result }) 
+  async getQualificationsByTrgEstablishment() {
+    this.setState({qualifications: [] })
+    let result = await this.contract.QualificationOwnershipInstance.methods.getQualificationsByTrgEstablishment(this.contract.currentUserAddress).call()
+    console.log(result)
     let qualification
-    for(qualification of this.state.qualifications) {
-      this.setState({qualificationDetail: [...this.state.qualificationDetail, await this.getQualificationDetails(qualification)]})
+    this.setState({qualificationDetail: []})
+    for(qualification of result) {
+    let details = await this.getQualificationDetails(qualification)
+    this.setState({qualificationDetail: [...this.state.qualificationDetail, details]})
     }
   }
 
 render() {
 
+  
+  
   const { qualificationDetail, searchField } = this.state
   const filteredQualifications = qualificationDetail.filter(qualification =>
     qualification.name.toLowerCase().includes(searchField.toLowerCase())
     )
+  
+  const _this = this
+  console.log(_this.contract.QualificationOwnershipInstance)
+  
 
   return (
     <div className="App">
-    
+    <Navbar bg="light">
+    <Navbar.Brand href="#home">
+      <img
+        src={`https://vitalpoint.ai/images/${this.state.currentUser.toLowerCase()}.png`}
+        className="d-inline-block align-top justify-content-between"
+        alt="Training Establishment Logo"
+      />
+    </Navbar.Brand>
+  </Navbar>
       <Container>
       <Card>
-      <CreateQualificationForm />
+      <CreateQualificationForm contract={_this.contract.QualificationOwnershipInstance} createQual={_this.createQualification} loading={this.state.loading} />
       </Card>
-      <Card>
-        <Card.Header as="h3">
-          Create Qualification
-        </Card.Header>
-        <Card.Body>            
-            <Form>
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Name of Qualification
-                    </Form.Label>
-                  </Col>
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      placeholder="Qualification Name"
-                      required="true"
-                      ref={c => {this.qualNameInput = c}}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Qualification Code
-                    </Form.Label>
-                  </Col>
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      placeholder="Qualification Code"
-                      required="true"
-                      ref={c => {this.qualCodeInput = c}}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Category
-                    </Form.Label>
-                  </Col>
-                  <Col>
-                    <Form.Control
-                      type="number"
-                      placeholder="Category (0 = parachuting)"
-                      required="true"
-                      ref={c => {this.qualCategoryInput = c}}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Expiry (Days)
-                    </Form.Label>
-                  </Col>
-                  <Col>
-                    <Form.Control
-                      type="number"
-                      placeholder="Expiry (Days)"
-                      required="true"
-                      ref={c => {this.qualExpiryInput = c}}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col></Col>
-                  <Col>
-                    <Button
-                      variant="primary"
-                      style={{ marginTop: '15px' }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        this.createQualification()
-                      }}
-                    >
-                      Create Qualification
-                    </Button>
-                  </Col>
-                </Row>
-            </Form>
-            <p>{!this.state.loading ? '' : 'Creating Qualification, please wait...'}</p>
-          </Card.Body>
-      </Card>
+      
       </Container>
       <SearchBox 
         placeholder='Search Qualifications'
         handleChange={this.handleChange}
       />
       <Container>
-        <CardList qualifications={filteredQualifications} />
+        <CardList qualifications={filteredQualifications} contract={_this.contract} getQualifications={_this.getQualificationsByTrgEstablishment}/>
       </Container>
     </div>
   );
