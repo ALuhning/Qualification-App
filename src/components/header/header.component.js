@@ -1,6 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { Navbar, Nav } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 //import { ReactComponent as Logo } from '../../assets/crown.svg'
 import './header.styles.css'
 //import CartIcon from '../cart-icon/cart-icon.component'
@@ -9,21 +9,14 @@ import './header.styles.css'
 const Header = ({ currentUser }) => (
         <Navbar bg="light" expand="lg">
             <Navbar.Brand >
-                
             </Navbar.Brand>
                 <Nav className="mr-auto">
-                    <Nav.Link >
-                    <Link className='logo-container' to="/" >
-                    Home
-                </Link>
-                    </Nav.Link>
-                    <Nav.Link >
-                        <Link to="/quals">
-                            Quals
-                        </Link>
-                    </Nav.Link>
+                   
+                    <LinkContainer to="/"><Nav.Link>Home</Nav.Link></LinkContainer>
+                    <LinkContainer to="/quals"><Nav.Link>Qualifications</Nav.Link></LinkContainer>
+                    <LinkContainer to="/establishments"><Nav.Link>Establishments</Nav.Link></LinkContainer>
+                        
                 </Nav>               
-          
         </Navbar>
 )
 

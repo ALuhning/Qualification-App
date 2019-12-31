@@ -9,13 +9,16 @@ class QualificationCard extends Component {
 
         this.state = {
             owner: '',
-            status: this.props.qualification.qualStatus
+            status: this.props.qualification.qualStatus,
+            currentUser: this.props.currentUser
         }
     }
 
-    async componentDidMount() {
-       const owner = await this.props.contract.QualificationOwnershipInstance.methods.ownerOf(this.props.qualification.id).call()
-       this.setState({ owner })
+    componentDidMount() {
+       this.props.contract.methods.ownerOf(this.props.qualification.id).call({from: this.state.currentUser }).then((result)=> {
+            this.setState({ owner: result })
+       })
+       
     }
 
     render() {
@@ -24,7 +27,7 @@ class QualificationCard extends Component {
             <Card.Header as="h5" className="align-items-center" style={{ backgroundColor: '#ffffff', justifyContent: 'center', alignItems: 'center'}}>
                 <Row>
                     <Col>
-                        <img alt="qualification code" src={`https://vitalpoint.ai/images/quals/${this.props.qualification.qualCode.toLowerCase()}.jpg`}/>
+                        <img alt="qualification code" src={`https://challengecoin.azurewebsites.net/images/quals/${this.props.qualification.qualCode.toLowerCase()}.jpg`}/>
                     </Col>
                     <Col>
                         {this.props.qualification.name}<br/><p>({this.props.qualification.qualCode})</p>
@@ -35,6 +38,7 @@ class QualificationCard extends Component {
                 </Row>
             </Card.Header>
                 <Card.Title>
+                    
                     Owner: {this.state.owner}
                 </Card.Title>
                 <Card.Body>

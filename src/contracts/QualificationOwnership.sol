@@ -16,7 +16,7 @@ contract QualificationOwnership is QualificationHelper, ERC721Full {
             metadata = _metadata;
         }
 
-    function mint(address recipient, uint qualId) public onlyOwner {
+    function mint(address recipient, uint qualId) public {
         _mint(recipient, qualId);
     }
 

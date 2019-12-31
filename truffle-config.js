@@ -10,7 +10,9 @@ function getLoomProviderWithPrivateKey (privateKeyPath, chainId, writeUrl, readU
 module.exports = {
   contracts_directory: path.join(__dirname, './src/contracts'),
   contracts_build_directory: path.join(__dirname, './src/abis'),
-
+  ens: {
+    enabled: true
+  },
   networks: {
     extdev_plasma_us1: {
       provider: function() {

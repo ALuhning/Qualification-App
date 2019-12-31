@@ -13,6 +13,7 @@ import {
       this._createCurrentUserAddress()
       this._createWebInstance()
       await this._createContractInstance()
+      
     }
   
     _createClient() {
@@ -34,7 +35,7 @@ import {
       
     }
   
-    _createCurrentUserAddress() {
+    async _createCurrentUserAddress() {
       this.currentUserAddress = LocalAddress.fromPublicKey(this.publicKey).toString()
     }
   

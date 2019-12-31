@@ -2,22 +2,21 @@ import React from 'react'
 import { useFormik } from 'formik'
 import { Card, Button, Form, Row, Col } from 'react-bootstrap'
 import Web3 from 'web3'
-import ImageUpload from '../file-upload/image-upload.component'
 
-const CreateQualificationForm = ({createQual, loading, errorMessage}) => {
+const CoinIssuanceForm = ({createQual, loading, errorMessage}) => {
     
     const validate = values => {
       const errors = {}
-      if(!values.qualName) {
-        errors.qualName = 'Required'
-      } else if (values.qualName.length > 30) {
-        errors.qualName = 'Must be 30 characters or less'
+      if(!values.coinName) {
+        errors.coinName = 'Required'
+      } else if (values.coinName.length > 30) {
+        errors.coinName = 'Must be 30 characters or less'
       }
 
-      if(!values.qualCode) {
-        errors.qualCode = 'Required'
-      } else if (values.qualCode.length > 4) {
-        errors.qualCode = 'Must be 4 characters or less'
+      if(!values.coinCode) {
+        errors.coinCode = 'Required'
+      } else if (values.coinCode.length > 4) {
+        errors.coinCode = 'Must be 4 characters or less'
       }
 
       if(!values.recipient) {
@@ -29,13 +28,13 @@ const CreateQualificationForm = ({createQual, loading, errorMessage}) => {
     
     const formik = useFormik({
         initialValues: {
-            qualName: '',
-            qualCode: '',
+            coinName: '',
+            coinCode: '',
             recipient: ''
         },
         validate,
         onSubmit: values=> {
-            createQual(values.qualName, values.qualCode, Web3.utils.toChecksumAddress(values.recipient));
+            createQual(values.coinName, values.coinCode, Web3.utils.toChecksumAddress(values.recipient));
             formik.resetForm({});
         },
     })
@@ -43,41 +42,41 @@ const CreateQualificationForm = ({createQual, loading, errorMessage}) => {
     return (
         <Card>
         <Card.Header as="h3">
-          Issue Qualification
+          Issue Challenge Coin
         </Card.Header>
         <Card.Body>            
             <Form onSubmit={formik.handleSubmit}>
                 <Row>
                   <Col>
                     <Form.Label>
-                      Type of Qualification
+                      Type of Challenge Coin
                     </Form.Label>
                   </Col>
                   <Col>
-                    {formik.errors.qualName ? <div>{formik.errors.qualName}</div> : null}
+                    {formik.errors.coinName ? <div>{formik.errors.coinName}</div> : null}
                     <Form.Control
-                        id="qualName"
-                        name="qualName"
+                        id="coinName"
+                        name="coinName"
                         type="text"
                         onChange={formik.handleChange}
-                        value={formik.values.qualName}
+                        value={formik.values.coinName}
                     />
                   </Col>
                 </Row>
                 <Row>
                   <Col>
                     <Form.Label>
-                      Qualification Code
+                      Challenge Coin Code
                     </Form.Label>
                   </Col>
                   <Col>
-                    {formik.errors.qualCode ? <div>{formik.errors.qualCode}</div> : null}
+                    {formik.errors.coinCode ? <div>{formik.errors.coinCode}</div> : null}
                     <Form.Control
-                        id="qualCode"
-                        name="qualCode"
+                        id="coinCode"
+                        name="coinCode"
                         type="text"
                         onChange={formik.handleChange}
-                        value={formik.values.qualCode}
+                        value={formik.values.coinCode}
                     />
                   </Col>
                 </Row>
@@ -109,14 +108,10 @@ const CreateQualificationForm = ({createQual, loading, errorMessage}) => {
                     </Button>
                   </Col>
                 </Row>
-                <Row>
                 <p>{errorMessage}</p>
-                </Row>
-                <ImageUpload />
             </Form>
-           
           </Card.Body>
-      </Card> 
+      </Card>
     )
 }
 

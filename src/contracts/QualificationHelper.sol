@@ -21,11 +21,11 @@ contract QualificationHelper is QualificationFactory {
     qualifications[_qualificationId].qualStatus = !qualifications[_qualificationId].qualStatus;
   }
 
-  function getQualificationsByTrgEstablishment(address _owner) external view returns(uint[] memory) {
-    uint[] memory result = new uint[](trgEstablishmentQualificationCount[_owner]);
+  function getQualificationsByTrgEstablishment(address _trgEstablishment) external view returns(uint[] memory) {
+    uint[] memory result = new uint[](trgEstablishmentQualificationCount[_trgEstablishment]);
     uint counter = 0;
     for (uint i = 0; i < qualifications.length; i++) {
-      if (qualificationToTrgEstablishment[i] == _owner) {
+      if (qualificationToTrgEstablishment[i] == _trgEstablishment) {
         result[counter] = i;
         counter++;
       }
