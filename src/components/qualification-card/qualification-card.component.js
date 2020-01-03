@@ -27,7 +27,7 @@ class QualificationCard extends Component {
             <Card.Header as="h5" className="align-items-center" style={{ backgroundColor: '#ffffff', justifyContent: 'center', alignItems: 'center'}}>
                 <Row>
                     <Col>
-                        <img alt="qualification code" src={`https://challengecoin.azurewebsites.net/images/quals/${this.props.qualification.qualCode.toLowerCase()}.jpg`}/>
+                        <img alt="qualification code" style={{width:'150px'}} src={this.props.qualification.imageFileName}/>
                     </Col>
                     <Col>
                         {this.props.qualification.name}<br/><p>({this.props.qualification.qualCode})</p>

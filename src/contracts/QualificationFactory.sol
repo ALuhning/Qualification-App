@@ -29,7 +29,8 @@ contract QualificationFactory is Ownable {
         string qualificationName,
         string qualificationCode,
         address trgEstablishment,
-        bool qualStatus);
+        bool qualStatus,
+        string imageFileName);
     
   struct Soldier {
       uint soldierId;
@@ -48,6 +49,7 @@ contract QualificationFactory is Ownable {
     address trgEstablishment;
     uint32 created;
     bool qualStatus;
+    string imageFileName;
   }
 
   uint nextId = 1;
@@ -66,21 +68,23 @@ contract QualificationFactory is Ownable {
 
   function _createQualification(
       string memory _name,
-      string memory _qualCode
+      string memory _qualCode,
+      string memory _imageFileName
       ) internal {
-    qualifications.push(Qualification(nextId, _name, _qualCode, msg.sender, uint32(now), true));
+    qualifications.push(Qualification(nextId, _name, _qualCode, msg.sender, uint32(now), true, _imageFileName));
     qualificationToTrgEstablishment[nextId] = msg.sender;
     trgEstablishmentQualificationCount[msg.sender] = trgEstablishmentQualificationCount[msg.sender].add(1);
-    emit NewQualificationCreated(nextId, _name, _qualCode, msg.sender, true);
+    emit NewQualificationCreated(nextId, _name, _qualCode, msg.sender, true, _imageFileName);
     nextId = nextId.add(1);
   }
 
   function createQualification(
       string memory _name,
-      string memory _qualCode
+      string memory _qualCode,
+      string memory _imageFileName
   ) public {
    // require(_master.has(msg.sender), "DOES_NOT_HAVE_TRAINING_ESTABLISHMENT_OR_MASTER_ROLE");
-    _createQualification(_name, _qualCode);
+    _createQualification(_name, _qualCode, _imageFileName);
   }
 
     function assignMasterRole(address _masterAddress) public onlyOwner {

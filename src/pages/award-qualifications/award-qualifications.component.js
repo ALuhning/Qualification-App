@@ -77,11 +77,11 @@ class AwardQualifications extends Component {
         await this.state.contract.methods.owner(id).call( { from: this.state.currentUser } )
       }
     
-      async createQualification(name, code, recipient) {
+      async createQualification(name, code, recipient, imageFileName) {
         if( this.state.contract && this.state.currentUser) {
           try {
             this.setState({ loading: true })
-            const result = await this.state.contract.methods.createQualification(name, code).send({ from: this.state.currentUser })
+            const result = await this.state.contract.methods.createQualification(name, code, imageFileName).send({ from: this.state.currentUser })
             console.log(Web3.utils.isAddress(recipient))
             console.log(result)
             await this.state.contract.methods.mint(recipient, result.events.NewQualificationCreated.returnValues.qualificationId).send({ from: this.state.currentUser })

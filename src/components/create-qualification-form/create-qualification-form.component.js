@@ -2,7 +2,23 @@ import React from 'react'
 import { useFormik } from 'formik'
 import { Card, Button, Form, Row, Col } from 'react-bootstrap'
 import Web3 from 'web3'
-import ImageUpload from '../file-upload/image-upload.component'
+import axios from 'axios'
+import * as firebase from "firebase/app"
+import "firebase/storage"
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAZf41_hSNtcOtybPr_o_miVZovrQx1WiY",
+  authDomain: "qualification-coin.firebaseapp.com",
+  databaseURL: "https://qualification-coin.firebaseio.com",
+  projectId: "qualification-coin",
+  storageBucket: "qualification-coin.appspot.com",
+  messagingSenderId: "357835692605",
+  appId: "1:357835692605:web:b2a7450dfd43e352ffa854",
+  measurementId: "G-7V6P48MVWH"
+};
+
+
+firebase.initializeApp(firebaseConfig)
 
 const CreateQualificationForm = ({createQual, loading, errorMessage}) => {
     
@@ -31,14 +47,31 @@ const CreateQualificationForm = ({createQual, loading, errorMessage}) => {
         initialValues: {
             qualName: '',
             qualCode: '',
-            recipient: ''
+            recipient: '',
+            qualBadge: null,
+            file: null
         },
         validate,
         onSubmit: values=> {
-            createQual(values.qualName, values.qualCode, Web3.utils.toChecksumAddress(values.recipient));
-            formik.resetForm({});
+         
+          const fd = new FormData()
+
+          fd.append('image', values.file, values.file.name)
+          axios.post('https://us-central1-qualification-coin.cloudfunctions.net/uploadFile', fd).then((res) => {
+            console.log(res);
+            console.log(res.data.filename);
+            const storage = firebase.storage()
+            //console.log(storage)
+            const storageRef = storage.ref()
+            return storageRef.child(res.data.filename).getDownloadURL()
+          }).then((downloadURL) => {
+            console.log(downloadURL)
+              createQual(values.qualName, values.qualCode, Web3.utils.toChecksumAddress(values.recipient), downloadURL)
+              formik.resetForm({})
+              formik.setFieldValue("qualBadge", '')
+          })
         },
-    })
+      })
 
     return (
         <Card>
@@ -49,9 +82,7 @@ const CreateQualificationForm = ({createQual, loading, errorMessage}) => {
             <Form onSubmit={formik.handleSubmit}>
                 <Row>
                   <Col>
-                    <Form.Label>
-                      Type of Qualification
-                    </Form.Label>
+                    <p>Type of Qualification</p>
                   </Col>
                   <Col>
                     {formik.errors.qualName ? <div>{formik.errors.qualName}</div> : null}
@@ -66,9 +97,7 @@ const CreateQualificationForm = ({createQual, loading, errorMessage}) => {
                 </Row>
                 <Row>
                   <Col>
-                    <Form.Label>
-                      Qualification Code
-                    </Form.Label>
+                    <p>Qualification Code</p>
                   </Col>
                   <Col>
                     {formik.errors.qualCode ? <div>{formik.errors.qualCode}</div> : null}
@@ -82,10 +111,22 @@ const CreateQualificationForm = ({createQual, loading, errorMessage}) => {
                   </Col>
                 </Row>
                 <Row>
+                <Col>
+                  <p>Qualification Badge or Pin</p>
+                </Col>
+                <Col>
+                  <Form.Control
+                    id="qualBadge"
+                    name="qualBadge"
+                    type="file"
+                    onChange={(event) => {formik.setFieldValue("file", event.currentTarget.files[0])}}
+                    value={formik.values.qualBadge}
+                    />
+                </Col>
+                </Row>
+                <Row>
                   <Col>
-                    <Form.Label>
-                      Issued To:
-                    </Form.Label>
+                    <p>Recipient</p>
                   </Col>
                   <Col>
                     {formik.errors.recipient ? <div>{formik.errors.recipient}</div> : null}
@@ -112,7 +153,7 @@ const CreateQualificationForm = ({createQual, loading, errorMessage}) => {
                 <Row>
                 <p>{errorMessage}</p>
                 </Row>
-                <ImageUpload />
+               
             </Form>
            
           </Card.Body>

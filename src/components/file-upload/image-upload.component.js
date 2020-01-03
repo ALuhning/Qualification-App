@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
+import axios from 'axios'
+import { useAsyncCallback } from 'react-async-hook'
 
 const thumbsContainer = {
   display: 'flex',
@@ -55,6 +57,14 @@ export default function ImageUpload(props) {
     </div>
   ));
 
+  const fileUploadHandler = files.map(file => {
+        const fd = new FormData()
+        fd.append('image', file, file.name)
+        axios.post('https://us-central1-qualification-coin.cloudfunctions.net/uploadFile', fd).then((res) => {
+            console.log(res)
+        })
+  });
+
   useEffect(() => () => {
     // Make sure to revoke the data uris to avoid memory leaks
     files.forEach(file => URL.revokeObjectURL(file.preview));
@@ -69,6 +79,8 @@ export default function ImageUpload(props) {
       <aside style={thumbsContainer}>
         {thumbs}
       </aside>
+      <button onClick={fileUploadHandler}>Upload Image</button>
     </section>
+    
   );
 }

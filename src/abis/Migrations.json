@@ -1381,12 +1381,12 @@
     "9545242630824": {
       "events": {},
       "links": {},
-      "address": "0x577704F5200a35AB55e8E5c7d38bffebf81F9B52",
-      "transactionHash": "0x9ccf9a49a7affe22cfaed18910df3fa758f0bc95453b9d48fd872c2a87aeb450"
+      "address": "0x416C4F5fcF418488e4d6c2136654eDaC75B47E52",
+      "transactionHash": "0x1a37f14bfa358a3eefc7f35a7ac3b4798ad8b16da82ad2d3c502343ee40debe8"
     }
   },
   "schemaVersion": "3.0.19",
-  "updatedAt": "2019-12-30T23:51:40.552Z",
+  "updatedAt": "2020-01-02T22:36:49.324Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

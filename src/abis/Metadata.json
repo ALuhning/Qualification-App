@@ -3411,12 +3411,12 @@
     "9545242630824": {
       "events": {},
       "links": {},
-      "address": "0x0636e760D920AEE2A63F2b8265350A9157b5378B",
-      "transactionHash": "0xf9ffedc010003da182a09929e4a10e622769b4b2a55b1409ba2208f42161d26e"
+      "address": "0xDBE415DD9137Eb7eC726BE0b2b864f790c937e0E",
+      "transactionHash": "0xfcfafa754252c2fe75509ab71a1945e7ed7f9338a5018e63c99d2021f21c81ab"
     }
   },
   "schemaVersion": "3.0.19",
-  "updatedAt": "2019-12-30T23:51:36.029Z",
+  "updatedAt": "2020-01-02T22:36:43.947Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
