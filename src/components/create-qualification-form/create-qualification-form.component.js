@@ -7,7 +7,7 @@ import * as firebase from "firebase/app"
 import "firebase/storage"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAZf41_hSNtcOtybPr_o_miVZovrQx1WiY",
+  apiKey: process.env.REACT_APP_WEB_API_KEY,
   authDomain: "qualification-coin.firebaseapp.com",
   databaseURL: "https://qualification-coin.firebaseio.com",
   projectId: "qualification-coin",
